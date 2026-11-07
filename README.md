@@ -1,9 +1,9 @@
-# Lab 01: Zmienne, wyrażenia warunkowe i praca z IDE w C#
+# Lab 02: Pętle i sterowanie przebiegiem programu w C#
 
 | Parametr | Szczegóły |
 | --- | --- |
-| **Termin oddania** | 18.10.2026, godz. 23:00 |
-| **Suma punktów** | 10 pkt |
+| **Termin oddania** | 22.11.2026, godz. 23:00 |
+| **Suma punktów** | 20 pkt |
 | **Język / Platforma** | C# (.NET 8+) |
 | **Wymagane środowisko** | Visual Studio 2022 / VS Code (z C# Dev Kit) / JetBrains Rider |
 
@@ -13,94 +13,105 @@
 
 Przekroczenie terminu o $n$ zajęć (lub tygodni) wiąże się ze zmniejszeniem maksymalnej liczby punktów zdobytych za zadanie według wzoru:
 
-
 $$\text{Punkty końcowe} = \frac{\text{Punkty uzyskane}}{2^n}$$
 
 ---
 
 ## Wymagania techniczne i środowiskowe
 
-1. **Struktura projektu**: Zadania należy zrealizować w ramach jednego rozwiązania (Solucji / Solution) zawierającego 3 osobne projekty konsolowe lub jednego projektu z menu wyboru zadania.
+1. **Struktura projektu**: Zadania należy zrealizować w ramach jednego rozwiązania (Solucji / Solution) zawierającego 3 osobne projekty konsolowe lub jednego projektu z menu wyboru zadania. Zadania tworzą spójną historię tekstowej gry turowej typu RPG **„Walka z potworem”**.
 2. **Standardy C#**:
-* Stosuj właściwe konwencje nazewnictwa C# (`camelCase` dla zmiennych lokalnych, `PascalCase` dla metod/klas).
-* Do konwersji i walidacji danych wejściowych z konsoli używaj bezpiecznych metod (np. `double.TryParse(...)` lub `int.TryParse(...)`), aby program nie ulegał awarii po wpisaniu tekstu zamiast liczby.
-
-
-3. **Funkcjonalność IDE**: Wykorzystaj narzędzia wbudowane w wybrane środowisko (Visual Studio, VS Code, Rider):
-* Przetestuj działanie programu za pomocą debugera (stawianie punktów przerwania – *Breakpoints*, podgląd wartości zmiennych *Watch/Locals*).
-
-
+* Stosuj właściwe konwencje nazewnictwa C# (`camelCase` dla zmiennych lokalnych, `PascalCase` dla metod i klas).
+* Do konwersji i walidacji danych wejściowych z konsoli używaj bezpiecznych metod, np. `int.TryParse(...)`, aby program nie ulegał awarii po wpisaniu nieprawidłowej wartości.
+* Losowe obrażenia generuj za pomocą klasy `Random`.
+3. **Funkcjonalność IDE**: Wykorzystaj narzędzia wbudowane w wybrane środowisko:
+* Przetestuj działanie programu za pomocą debugera (stawianie punktów przerwania — *Breakpoints* — oraz podgląd wartości zmiennych *Watch/Locals*).
 
 ---
 
-## Zadanie 1: Liczby ściśle rosnące [2 pkt]
+## Zadanie 1: Pierwsze starcie [4 pkt]
 
-Napisz program konsolowy, który prosi użytkownika o podanie kolejno **pięciu liczb**.
+Napisz program konsolowy symulujący pierwszą walkę bohatera z goblinem. Gracz i potwór zadają sobie obrażenia na zmianę, dopóki jeden z nich nie zginie.
 
 ### Wymagania:
 
-* Program pobiera liczby pojedynczo (po każdej wprowadzonej liczbie zatwierdzonej klawiszem Enter).
-* Po wprowadzeniu każdej kolejnej liczby (począwszy od drugiej) program sprawdza, czy jest ona **ściśle większa** od poprzedniej.
-* Jeśli warunek rosnący zostanie naruszony (liczba jest mniejsza lub równa poprzedniej), program natychmiast kończy działanie i wyświetla stosowny komunikat (np. `Błąd: Liczba {x} nie jest większa od {y}. Program zakończony.`).
-* Jeżeli wszystkie 5 liczb zostanie wprowadzonych w ciągu ściśle rosnącym, program wyświetla komunikat o sukcesie.
+1. Zdefiniuj zmienne początkowe: `zdrowieGracza = 100` oraz `zdrowiePotwora = 50`.
+2. Użyj pętli `while`, która trwa dopóty, dopóki zarówno gracz, jak i potwór mają zdrowie większe od zera (`> 0`).
+3. W każdej turze:
+* Gracz zadaje potworowi losowe obrażenia, np. od 10 do 20, korzystając z klasy `Random`.
+* Jeżeli potwór nadal żyje, oddaje atak, zadając graczowi losowe obrażenia, np. od 5 do 15.
+* Wyświetl aktualny stan zdrowia (HP) obu postaci.
+4. Po zakończeniu pętli sprawdź, kto przeżył, i wyświetl komunikat o zwycięstwie gracza lub jego porażce.
+
+### Uwagi dotyczące jakości kodu
+
+* Warunek pętli powinien jasno opisywać, kiedy walka trwa, a wartości zdrowia muszą zmieniać się w każdej iteracji. Dzięki temu pętla zawsze ma możliwość zakończenia i nie staje się pętlą nieskończoną.
+* Utwórz jedną instancję `Random` przed rozpoczęciem pętli, zamiast tworzyć nową instancję przy każdym ataku.
+* Nie wykonuj ataku potwora po jego śmierci. Po każdym ataku sprawdzaj aktualny stan HP, aby wynik tury był logiczny.
+* Unikaj „magicznych liczb” — wartości początkowego zdrowia i zakresy obrażeń przechowuj w nazwanych stałych albo zmiennych.
+* Przetestuj co najmniej przypadki: potwór ginie po pierwszym ataku, gracz ginie po ataku potwora oraz walka trwa przez wiele iteracji. W debugerze obserwuj wartości HP krok po kroku.
 
 ---
 
-## Zadanie 2: Równanie liniowe [3 pkt]
+## Zadanie 2: Menu akcji i uniki [6 pkt]
 
-Napisz program rozwiązujący równanie liniowe w postaci ogólnej:
-
-
-$$a \cdot x + b = 0$$
+Rozbuduj grę z Zadania 1. W każdej turze gracz powinien wybrać akcję, a program musi poprawnie obsługiwać nieprawidłowe wybory.
 
 ### Wymagania:
 
-* Program prosi użytkownika o podanie wartości współczynników $a$ oraz $b$ (typu `double`).
-* Program analizuje i obsługuje wszystkie przypadki matematyczne:
-1. **Jedno rozwiązanie**: $a \neq 0 \implies x = -\frac{b}{a}$.
-2. **Równanie tożsamościowe** (nieskończenie wiele rozwiązań): $a = 0 \text{ oraz } b = 0$.
-3. **Równanie sprzeczne** (brak rozwiązań): $a = 0 \text{ oraz } b \neq 0$.
+1. Zastosuj pętlę `do-while` do obsługi wyboru akcji przez gracza w jednej turze.
+2. Wyświetl menu:
+* `[1]` Atak mieczem — zadaje stałe lub losowe obrażenia.
+* `[2]` Mikstura lecznicza — przywraca 25 punktów zdrowia. Gracz może użyć maksymalnie 2 mikstur w całej walce.
+* `[3]` Ucieczka — natychmiast przerywa walkę.
+3. Jeżeli użytkownik wpisze wartość inną niż 1, 2 lub 3, wewnętrzna pętla `do-while` musi poprosić o ponowny wybór. Błędny wpis nie może powodować utraty tury przez potwora.
+4. Główna pętla walki powinna działać do momentu zwycięstwa gracza, jego śmierci albo ucieczki.
 
+### Uwagi dotyczące jakości kodu
 
-* Wynik powinien zostać sformatowany i wyświetlony w czytelny sposób w konsoli.
+* Pętla `do-while` jest właściwa dla menu, ponieważ menu musi wyświetlić się co najmniej raz. Warunek powtórzenia powinien obejmować wyłącznie nieprawidłowe wybory.
+* Wczytanie wyboru zabezpiecz metodą `int.TryParse(...)`. Nie dopuszczaj do sytuacji, w której błędny tekst kończy program albo powoduje wykonanie przypadkowej akcji.
+* Nie twórz osobnych, zduplikowanych fragmentów kodu dla każdej tury. Zmiana HP, liczby wykorzystanych mikstur i informacji o ucieczce powinna być kontrolowana w jednym, czytelnym miejscu.
+* Pętla walki musi mieć jasno określone warunki zakończenia. Sprawdź, czy błędny wybór nie zmienia zdrowia, nie zużywa mikstury i nie uruchamia ataku potwora.
+* Przetestuj wybory `1`, `2` i `3`, wartość spoza zakresu, tekst zamiast liczby, próbę użycia trzeciej mikstury oraz sytuację, w której gracz ucieka z minimalnym i maksymalnym HP.
 
 ---
 
-## Zadanie 3: Równanie kwadratowe [5 pkt]
+## Zadanie 3: Wyprawa do lochu i system poziomów [10 pkt]
 
-Napisz program rozwiązujący równanie kwadratowe w postaci ogólnej:
-
-
-$$a \cdot x^2 + b \cdot x + c = 0$$
+Rozbuduj grę o wyprawę do lochu składającego się z kolejnych fal przeciwników. Bohater powinien pokonać trzy potwory pod rząd i zdobywać doświadczenie.
 
 ### Wymagania:
 
-* Program pobiera od użytkownika współczynniki $a, b, c$ (typu `double`).
-* Program weryfikuje warunek $a = 0$:
-* Jeśli $a = 0$, program wyświetla informację, że równanie zredukowało się do równania liniowego i wyznacza jego rozwiązanie (zgodnie z logiką z Zadania 2).
+1. Zastosuj zagnieżdżone pętle: zewnętrzna pętla ma sterować kolejnymi potworami w lochu, a wewnętrzna — turową walką z aktualnym przeciwnikiem.
+2. Zaprogramuj walkę z trzema potworami po kolei. Każdy kolejny przeciwnik powinien być silniejszy, np. mieć zdrowie obliczone według wzoru `30 + i * 15`, gdzie `i` oznacza numer potwora.
+3. Po pokonaniu potwora, przed przejściem do następnego:
+* Przywróć graczowi część zdrowia, np. 20 punktów.
+* Wyświetl podsumowanie statystyk, w tym liczbę pokonanych wrogów i aktualny poziom postaci.
+4. Jeżeli gracz zginie podczas dowolnej walki, natychmiast przerwij obie pętle za pomocą `break` i wyświetl komunikat **Game Over**.
 
+### Uwagi dotyczące jakości kodu
 
-* Jeśli $a \neq 0$, program oblicza wyróżnik równania kwadratowego ($\Delta = b^2 - 4ac$) i obsługuje trzy przypadki w zbiorze liczb rzeczywistych $\mathbb{R}$:
-1. $\Delta > 0$: dwa rozwiązania $x_1 = \frac{-b - \sqrt{\Delta}}{2a}$, $x_2 = \frac{-b + \sqrt{\Delta}}{2a}$.
-2. $\Delta = 0$: jedno rozwiązanie podwójne $x_0 = \frac{-b}{2a}$.
-3. $\Delta < 0$: brak rozwiązań w zbiorze liczb rzeczywistych.
-
-
-* Pierwiastki należy obliczać przy użyciu metody `Math.Sqrt(...)`.
+* Użyj pętli `for` jako pętli zewnętrznej, ponieważ liczba potworów jest znana z góry, oraz pętli `while` jako wewnętrznej, ponieważ liczba tur potrzebnych do pokonania potwora nie jest znana.
+* Licznik potworów i zmienne dotyczące bieżącej walki powinny mieć jednoznaczne zakresy. Nie zmieniaj licznika pętli zewnętrznej wewnątrz pętli walki.
+* `break` stosuj tylko do jasno określonego celu — zakończenia aktualnej pętli po śmierci gracza. Jeżeli do przerwania obu pętli potrzebujesz dodatkowej zmiennej stanu, jej nazwa powinna jednoznacznie wskazywać przyczynę zakończenia, np. `gameOver`.
+* Regeneracja nie powinna przekraczać maksymalnego zdrowia gracza. Aktualizację poziomu i statystyk wykonuj w jednym miejscu po zakończeniu walki z przeciwnikiem.
+* Przetestuj loch z trzema przeciwnikami, śmierć podczas pierwszej i kolejnych walk oraz przejście do następnego przeciwnika po zwycięstwie. W debugerze obserwuj jednocześnie licznik pętli zewnętrznej, HP i liczbę pokonanych wrogów.
 
 ---
 
 ## Uwagi formalne i ocena
 
-1. **Konstrukcje warunkowe**:
-* Przynajmniej w jednym ze sposobów wyboru/wyświetlania wyników (np. sprawdzanie znaku $\Delta$ lub statusu równania) użyj **trójargumentowego operatora wyrażenia warunkowego** (`condition ? trueExpr : falseExpr`).
-* Pozostałą logikę rozgałęzień zrealizuj przy użyciu klasycznych instrukcji `if`, `else if`, `else`.
+1. **Pętle i sterowanie przepływem**:
+* W Zadaniu 1 obowiązkowo użyj pętli `while`.
+* W Zadaniu 2 użyj pętli `do-while` do walidacji wyboru akcji oraz pętli sterującej walką.
+* W Zadaniu 3 użyj zagnieżdżonych pętli i instrukcji `break` do zakończenia walki po śmierci gracza.
+* Rozgałęzienia warunkowe zrealizuj za pomocą instrukcji `if`, `else if`, `else`. W co najmniej jednym miejscu możesz dodatkowo zastosować operator warunkowy (`condition ? trueExpr : falseExpr`).
 
-
-2. **Diagramy blokowe**:
-* Do zadań dotyczących równania liniowego oraz kwadratowego należy dołączyć **diagramy blokowe** przedstawiające pełną logikę algorytmu (uwzględniające wszystkie odgałęzienia i przypadki szczególne).
+2. **Dokumentacja algorytmu**:
+* Do każdego zadania należy dołączyć diagram blokowy przedstawiający pełną logikę algorytmu, w tym warunki zakończenia pętli i wszystkie istotne odgałęzienia.
 * Diagramy należy wykonać w wybranym narzędziu graficznym (np. [diagrams.net / draw.io](https://app.diagrams.net/)) i załączyć jako pliki graficzne (`.png`, `.svg` lub `.pdf`) do oddawanego zadania.
 
-
 3. **Walidacja wejścia**:
-* Brak odporności na błędy konwersji znaków (np. wyrzucenie wyjątku `FormatException` po wpisaniu litery zamiast cyfry) skutkuje obniżeniem oceny z danego zadania o 20%.
+* Program nie może przerywać działania po wpisaniu tekstu zamiast liczby ani po podaniu wartości spoza dostępnego menu.
+* Brak odporności na błędy konwersji lub brak walidacji wyboru skutkuje obniżeniem oceny z danego zadania o 20%.
